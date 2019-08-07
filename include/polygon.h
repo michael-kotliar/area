@@ -11,25 +11,16 @@
 #include <map>
 #include <vector>
 
+#include <opencv2/opencv.hpp>
 
 using namespace std;
-
-
-struct Vertex {
-    int x;
-    int y;
-    void print();
-    Vertex (const int &a, const int & b);
-    Vertex ():
-        x(0),
-        y(0){}
-};
+using namespace cv;
 
 
 struct Edge {
-    Vertex start;
-    Vertex end;
-    Edge (const Vertex &a, const Vertex &b);
+    Point start;
+    Point end;
+    Edge (const Point &a, const Point &b);
     void print();
 };
 
@@ -38,13 +29,20 @@ class Polygon {
 
 public:
     Polygon(const string &path);
-    void load(const string &path);
+    void load_data(const string &path);
     void print_edges();
     void print_vertices();
+    void show();
 private:
-    vector<Vertex> vertices;
+    int resolution;  // dots per unit
+    int width;
+    int height;
+    int offset;
+    Mat image;
+    vector<Point> vertices;
     vector<Edge> edges;
-
+    void setup_canvas();
+    void draw();
 };
 
 
