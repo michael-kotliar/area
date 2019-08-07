@@ -10,10 +10,11 @@ include_directories (include)
 set(SOURCE_FILES
         src/main.cpp
         src/parser.cpp
-        src/analysis.cpp
+        src/polygon.cpp
         include/cxxopts.hpp
         include/parser.h
-        include/analysis.h
+        include/polygon.h
+        include/utils.h
 )
 
 add_executable(area ${SOURCE_FILES})
