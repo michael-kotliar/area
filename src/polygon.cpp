@@ -14,8 +14,8 @@ void Edge::print(){
 
 
 Polygon::Polygon(const string &path){
-    resolution = 50;
-    offset = 50;
+    resolution = 300;
+    offset = 300;
     lookup_direction.push_back(pair <int, int > (-1, -1) );
     lookup_direction.push_back(pair <int, int > (0, -1) );
     lookup_direction.push_back(pair <int, int > (1, -1) );
@@ -98,7 +98,6 @@ bool Polygon::make_step(int &x, int &y, vector <Point> &available_steps){
     return false;
 }
 
-
 bool Polygon::is_single(){
     for (int i = 0; i < edges.size(); i++){  // check only starts
         Point cur_point (edges[i].start.x, edges[i].start.y);
@@ -109,7 +108,6 @@ bool Polygon::is_single(){
     }
     return true;
 }
-
 
 bool Polygon::validate(){
     int start_x = edges[0].start.x;
@@ -129,6 +127,42 @@ bool Polygon::validate(){
 void Polygon::show(){
     namedWindow("Area", WINDOW_AUTOSIZE);
     imshow("Polygon", image);
+}
+
+
+double Polygon::calculate_area(){
+    int count = 0;
+    for(int j = 0; j < image.rows; j++){
+        Point previous_point = Point(0, j);
+        int start_x = 0;
+        int end_x = 0;
+        bool enter_green = false;
+        for(int i = 0; i < image.cols; i++){
+            Point cur_point (i, j);
+            Vec3b &previous_color = image.at<Vec3b>(previous_point);
+            Vec3b &cur_color = image.at<Vec3b>(cur_point);
+            if (previous_color[0] == 0 && previous_color[1] == 0 && previous_color[2] == 0 && cur_color[0] == 0 && cur_color[1] == 255 && cur_color[2] == 0){
+                enter_green = true;
+                if (start_x != 0){
+                    end_x = cur_point.x; 
+                }
+            };
+            if (enter_green && previous_color[0] == 0 && previous_color[1] == 255 && previous_color[2] == 0 && cur_color[0] == 0 && cur_color[1] == 0 && cur_color[2] == 0){
+                if (start_x == 0){
+                    start_x = cur_point.x; 
+                }
+                enter_green = false;
+            };
+            previous_point = cur_point;
+        };
+        for (int i = start_x; i < end_x; i++){
+            count++;
+            Point cur_point (i, j);
+            Vec3b &cur_color = image.at<Vec3b>(cur_point);
+            cur_color = Vec3b(0,255,0);
+        }
+    }
+    return count/pow(resolution, 2);
 }
 
 

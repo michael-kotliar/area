@@ -32,6 +32,7 @@ public:
     void load_data(const string &path);
     void print_edges();
     void show();
+    double calculate_area();
     bool validate();
 private:
     int resolution;  // dots per unit

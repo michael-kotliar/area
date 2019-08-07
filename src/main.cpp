@@ -8,8 +8,10 @@ using namespace std;
 int main(int argc, char* argv[]){
 	Parser custom_parser = Parser(argc, argv);
     Polygon polygon = Polygon(custom_parser.coord);
-    polygon.print_edges();
+    // polygon.print_edges();
     if (polygon.validate()){
+        double area = polygon.calculate_area();
+        cout << "Area = " << area << endl;
         polygon.show();
     }
     waitKey(0);
