@@ -9,7 +9,7 @@ Edge::Edge (const Point &a, const Point &b){
 
 
 Polygon::Polygon(const string &path){
-    resolution = 5;
+    resolution = 300;
     offset = 5;
     lookup_direction.push_back(pair <int, int > (-1, -1) );
     lookup_direction.push_back(pair <int, int > (0, -1) );
