@@ -32,6 +32,7 @@ public:
     void load_data(const string &path);
     void print_edges();
     void show();
+    bool validate();
 private:
     int resolution;  // dots per unit
     int width;
@@ -41,6 +42,8 @@ private:
     vector<Edge> edges;
     void setup_canvas();
     void draw();
+    bool shift(int &x, int &y);
+    bool is_closed(const int &x, const int &y);
 };
 
 

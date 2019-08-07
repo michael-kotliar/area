@@ -9,6 +9,10 @@ int main(int argc, char* argv[]){
 	Parser custom_parser = Parser(argc, argv);
     Polygon polygon = Polygon(custom_parser.coord);
     polygon.print_edges();
-    polygon.show();
+    if (polygon.validate()){
+        polygon.show();
+    }
+    
+    waitKey(0);
     return 0;
 }

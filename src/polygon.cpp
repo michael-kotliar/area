@@ -66,14 +66,68 @@ void Polygon::setup_canvas(){
 void Polygon::draw(){
     image = Mat(height, width, CV_8UC3, Scalar(0, 0, 0));
     for (int i=0; i<edges.size(); i++){
-        line(image, edges[i].start, edges[i].end, Scalar(200,200,200));
+        line(image, edges[i].start, edges[i].end, Scalar(255,255,255));
     }
 }
 
+bool Polygon::shift(int &x, int &y){
+    for (int i=x-1; i<=x+1; i++){
+        for (int j=y-1; j<=y+1; j++){
+            if (i==x && j==y){
+                continue;
+            }
+            Vec3b &color_val = image.at<Vec3b>(Point(i,j));
+            if (color_val[0] == 255 && color_val[1] == 255 && color_val[2] == 255){
+                color_val = Vec3b(0,255,0);
+                x = i;
+                y = j;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Polygon::is_closed(const int &x, const int &y){
+    int count_green = 0;
+    int count_white = 0;
+    for (int i=x-1; i<=x+1; i++){
+        for (int j=y-1; j<=y+1; j++){
+            if (i==x && j==y){
+                continue;
+            }
+            Vec3b &color_val = image.at<Vec3b>(Point(i,j));
+            if (color_val[0] == 0 && color_val[1] == 255 && color_val[2] == 0){
+                count_green++;
+            };
+            if (color_val[0] == 255 && color_val[1] == 255 && color_val[2] == 255){
+                count_white++;
+            }
+        }
+    }
+    if (count_white==0 && count_green>=2){
+        return true;
+    }
+    return false;
+}
+
+bool Polygon::validate(){
+    int start_x = edges[0].start.x;
+    int start_y = edges[0].start.y;
+    cout << "start_x " << start_x << ", start_y " << start_y << endl;
+    int cur_x = start_x;
+    int cur_y = start_y;
+    while (shift(cur_x, cur_y)){
+        if (is_closed(cur_x, cur_y)){
+            return true;
+        }
+    }
+    return false;
+}
+
 void Polygon::show(){
-    namedWindow("Area", WINDOW_AUTOSIZE );
+    namedWindow("Area", WINDOW_AUTOSIZE);
     imshow("Polygon", image);
-    waitKey(0);
 }
 
 
