@@ -9,7 +9,7 @@ Edge::Edge (const Point &a, const Point &b){
 
 
 Polygon::Polygon(const string &path){
-    resolution = 300;
+    resolution = 5;
     offset = 5;
     lookup_direction.push_back(pair <int, int > (-1, -1) );
     lookup_direction.push_back(pair <int, int > (0, -1) );
@@ -135,31 +135,40 @@ double Polygon::calculate_area(){
         Point previous_point = Point(0, j);
         int start_x = 0;
         int end_x = 0;
-        bool enter_green = false;
+        bool inside = false;
+        bool entering = false;
         for(int i = 0; i < image.cols; i++){
             Point cur_point (i, j);
             Vec3b &previous_color = image.at<Vec3b>(previous_point);
             Vec3b &cur_color = image.at<Vec3b>(cur_point);
             if (previous_color == BLACK && cur_color == GREEN){
-                enter_green = true;
-                if (start_x != 0){
-                    end_x = cur_point.x; 
+                if (inside){
+                    end_x = cur_point.x;
+                    entering = false;
+                    inside = false;
+                } else {
+                    entering = true;
                 }
             };
-            if (enter_green && previous_color == GREEN && cur_color == BLACK){
-                if (start_x == 0){
-                    start_x = cur_point.x; 
+            if (previous_color == GREEN && cur_color == BLACK){
+                if (entering){
+                    inside = true;
+                    start_x = cur_point.x;
                 }
-                enter_green = false;
             };
+            if (start_x != 0 && end_x != 0){
+                for (int i = start_x; i < end_x; i++){
+                    count++;
+                    Point cur_point (i, j);
+                    Vec3b &cur_color = image.at<Vec3b>(cur_point);
+                    cur_color = GREEN;
+                };
+                start_x = 0;
+                end_x = 0;
+            }
             previous_point = cur_point;
         };
-        for (int i = start_x; i < end_x; i++){
-            count++;
-            Point cur_point (i, j);
-            Vec3b &cur_color = image.at<Vec3b>(cur_point);
-            cur_color = GREEN;
-        }
+
     }
     return count/pow(resolution, 2);
 }
