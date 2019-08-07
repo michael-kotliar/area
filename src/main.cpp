@@ -12,7 +12,6 @@ int main(int argc, char* argv[]){
     if (polygon.validate()){
         polygon.show();
     }
-    
     waitKey(0);
     return 0;
 }

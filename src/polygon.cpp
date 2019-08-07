@@ -16,6 +16,14 @@ void Edge::print(){
 Polygon::Polygon(const string &path){
     resolution = 50;
     offset = 50;
+    lookup_direction.push_back(pair <int, int > (-1, -1) );
+    lookup_direction.push_back(pair <int, int > (0, -1) );
+    lookup_direction.push_back(pair <int, int > (1, -1) );
+    lookup_direction.push_back(pair <int, int > (1, 0) );
+    lookup_direction.push_back(pair <int, int > (1, 1) );
+    lookup_direction.push_back(pair <int, int > (0, 1) );
+    lookup_direction.push_back(pair <int, int > (-1, 1) );
+    lookup_direction.push_back(pair <int, int > (-1, 0) );
     load_data(path);
     setup_canvas();
     draw();
@@ -70,59 +78,52 @@ void Polygon::draw(){
     }
 }
 
-bool Polygon::shift(int &x, int &y){
-    for (int i=x-1; i<=x+1; i++){
-        for (int j=y-1; j<=y+1; j++){
-            if (i==x && j==y){
-                continue;
-            }
-            Vec3b &color_val = image.at<Vec3b>(Point(i,j));
-            if (color_val[0] == 255 && color_val[1] == 255 && color_val[2] == 255){
-                color_val = Vec3b(0,255,0);
-                x = i;
-                y = j;
-                return true;
-            }
-        }
+bool Polygon::make_step(int &x, int &y, vector <Point> &available_steps){
+    for (int k = 0; k < lookup_direction.size(); k++){
+        Point cur_point = Point(x + lookup_direction[k].first, y + lookup_direction[k].second);
+        Vec3b &color = image.at<Vec3b>(cur_point);
+        if (color[0] == 255 && color[1] == 255 && color[2] == 255){
+            available_steps.push_back(cur_point);        // check if it already added
+        };
     }
-    return false;
-}
-
-bool Polygon::is_closed(const int &x, const int &y){
-    int count_green = 0;
-    int count_white = 0;
-    for (int i=x-1; i<=x+1; i++){
-        for (int j=y-1; j<=y+1; j++){
-            if (i==x && j==y){
-                continue;
-            }
-            Vec3b &color_val = image.at<Vec3b>(Point(i,j));
-            if (color_val[0] == 0 && color_val[1] == 255 && color_val[2] == 0){
-                count_green++;
-            };
-            if (color_val[0] == 255 && color_val[1] == 255 && color_val[2] == 255){
-                count_white++;
-            }
-        }
-    }
-    if (count_white==0 && count_green>=2){
+    if (available_steps.size() > 0){
+        Point next_step = available_steps.back();
+        available_steps.pop_back();
+        Vec3b &color = image.at<Vec3b>(next_step);
+        color = Vec3b(0,255,0);
+        x = next_step.x;
+        y = next_step.y;
         return true;
     }
     return false;
 }
 
+
+bool Polygon::is_single(){
+    for (int i = 0; i < edges.size(); i++){  // check only starts
+        Point cur_point (edges[i].start.x, edges[i].start.y);
+        Vec3b &color = image.at<Vec3b>(cur_point);
+        if (color[0] != 0 || color[1] != 255 || color[2] != 0){
+            return false;
+        };
+    }
+    return true;
+}
+
+
 bool Polygon::validate(){
     int start_x = edges[0].start.x;
     int start_y = edges[0].start.y;
-    cout << "start_x " << start_x << ", start_y " << start_y << endl;
     int cur_x = start_x;
     int cur_y = start_y;
-    while (shift(cur_x, cur_y)){
-        if (is_closed(cur_x, cur_y)){
-            return true;
+    vector <Point> available_steps;
+    bool closed = false;
+    while (make_step(cur_x, cur_y, available_steps)){
+        if (cur_x == start_x && cur_y == start_y){
+            closed = true;
         }
     }
-    return false;
+    return closed && is_single();
 }
 
 void Polygon::show(){
@@ -145,8 +146,8 @@ void Polygon::load_data(const string &path){
     string line;
     while (getline(input_stream, line)){
         vector<string> values = split_by_delim(line, ",");
-        Point start = Point(atoi(values[0].c_str()) * resolution, atoi(values[1].c_str()) * resolution);
-        Point end = Point(atoi(values[2].c_str()) * resolution, atoi(values[3].c_str()) * resolution);
+        Point start = Point( round(atof(values[0].c_str())*resolution), round(atof(values[1].c_str())*resolution) );
+        Point end = Point( round(atof(values[2].c_str())*resolution), round(atof(values[3].c_str())*resolution) );
         Edge edge = Edge(start, end);
         edges.push_back(edge);
     }

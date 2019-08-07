@@ -38,12 +38,13 @@ private:
     int width;
     int height;
     int offset;
+    vector <pair <int, int> > lookup_direction;
     Mat image;
     vector<Edge> edges;
     void setup_canvas();
     void draw();
-    bool shift(int &x, int &y);
-    bool is_closed(const int &x, const int &y);
+    bool make_step(int &x, int &y, vector <Point> &available_steps);
+    bool is_single();
 };
 
 
