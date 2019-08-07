@@ -108,12 +108,17 @@ bool Polygon::validate(){
     int start_y = edges[0].start.y;
     int cur_x = start_x;
     int cur_y = start_y;
+    int previous_x = start_x;
+    int previous_y = start_y;
     vector <Point> available_steps;
     bool closed = false;
     while (make_step(cur_x, cur_y, available_steps)){
-        if (cur_x == start_x && cur_y == start_y){
+        double dist = sqrt(pow((cur_x-previous_x),2)+pow((cur_y-previous_y),2));
+        if (cur_x == start_x && cur_y == start_y && dist < 1.5){
             closed = true;
         }
+        previous_x = cur_x;
+        previous_y = cur_y;
     }
     return closed && is_single();
 }

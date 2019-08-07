@@ -12,6 +12,8 @@ int main(int argc, char* argv[]){
         double area = polygon.calculate_area();
         cout << "Area = " << area << endl;
         polygon.show();
+    } else {
+        cout << "Polygon is not single or not closed" << endl;
     }
     waitKey(0);
     return 0;
