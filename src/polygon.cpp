@@ -66,9 +66,9 @@ void Polygon::setup_canvas(){
 }
 
 void Polygon::build(){
-    image = Mat(height, width, CV_8UC3, Scalar(0, 0, 0));
+    image = Mat(height, width, CV_8UC3, BLACK);
     for (int i=0; i<edges.size(); i++){
-        line(image, edges[i].start, edges[i].end, Scalar(255,255,255));
+        line(image, edges[i].start, edges[i].end, WHITE);
     }
 }
 
@@ -76,7 +76,7 @@ bool Polygon::make_step(int &x, int &y, vector <Point> &available_steps){
     for (int k = 0; k < lookup_direction.size(); k++){
         Point cur_point = Point(x + lookup_direction[k].first, y + lookup_direction[k].second);
         Vec3b &color = image.at<Vec3b>(cur_point);
-        if (color[0] == 255 && color[1] == 255 && color[2] == 255){
+        if (color == WHITE){
             available_steps.push_back(cur_point);        // check if it already added
         };
     }
@@ -84,7 +84,7 @@ bool Polygon::make_step(int &x, int &y, vector <Point> &available_steps){
         Point next_step = available_steps.back();
         available_steps.pop_back();
         Vec3b &color = image.at<Vec3b>(next_step);
-        color = Vec3b(0,255,0);
+        color = GREEN;
         x = next_step.x;
         y = next_step.y;
         return true;
@@ -96,7 +96,7 @@ bool Polygon::is_single(){
     for (int i = 0; i < edges.size(); i++){
         Point start_point (edges[i].start.x, edges[i].start.y);
         Vec3b &color = image.at<Vec3b>(start_point);
-        if (color[0] != 0 || color[1] != 255 || color[2] != 0){
+        if (color != GREEN){
             return false;
         };
     }
@@ -135,13 +135,13 @@ double Polygon::calculate_area(){
             Point cur_point (i, j);
             Vec3b &previous_color = image.at<Vec3b>(previous_point);
             Vec3b &cur_color = image.at<Vec3b>(cur_point);
-            if (previous_color[0] == 0 && previous_color[1] == 0 && previous_color[2] == 0 && cur_color[0] == 0 && cur_color[1] == 255 && cur_color[2] == 0){
+            if (previous_color == BLACK && cur_color == GREEN){
                 enter_green = true;
                 if (start_x != 0){
                     end_x = cur_point.x; 
                 }
             };
-            if (enter_green && previous_color[0] == 0 && previous_color[1] == 255 && previous_color[2] == 0 && cur_color[0] == 0 && cur_color[1] == 0 && cur_color[2] == 0){
+            if (enter_green && previous_color == GREEN && cur_color == BLACK){
                 if (start_x == 0){
                     start_x = cur_point.x; 
                 }
@@ -153,7 +153,7 @@ double Polygon::calculate_area(){
             count++;
             Point cur_point (i, j);
             Vec3b &cur_color = image.at<Vec3b>(cur_point);
-            cur_color = Vec3b(0,255,0);
+            cur_color = GREEN;
         }
     }
     return count/pow(resolution, 2);

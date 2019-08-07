@@ -17,6 +17,11 @@ using namespace std;
 using namespace cv;
 
 
+const Vec3b GREEN = Vec3b(0,255,0);
+const Vec3b WHITE = Vec3b(255,255,255);
+const Vec3b BLACK = Vec3b(0,0,0);
+
+
 struct Edge {
     Point start;
     Point end;
