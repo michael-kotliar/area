@@ -31,7 +31,6 @@ public:
     Polygon(const string &path);
     void load_data(const string &path);
     void print_edges();
-    void print_vertices();
     void show();
 private:
     int resolution;  // dots per unit
@@ -39,7 +38,6 @@ private:
     int height;
     int offset;
     Mat image;
-    vector<Point> vertices;
     vector<Edge> edges;
     void setup_canvas();
     void draw();

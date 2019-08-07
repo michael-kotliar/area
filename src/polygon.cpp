@@ -22,30 +22,38 @@ Polygon::Polygon(const string &path){
 }
 
 void Polygon::setup_canvas(){
-    int min_x = vertices[0].x;
-    int max_x = vertices[0].x;
-    int min_y = vertices[0].y;
-    int max_y = vertices[0].y;
-    for (int i=0; i < vertices.size(); i++){
-        if (vertices[i].x < min_x){
-            min_x = vertices[i].x;
+    int min_x = edges[0].start.x;
+    int max_x = edges[0].start.x;
+    int min_y = edges[0].start.y;
+    int max_y = edges[0].start.y;
+    for (int i=0; i < edges.size(); i++){
+        if (edges[i].start.x < min_x){
+            min_x = edges[i].start.x;
         };
-        if (vertices[i].y < min_y){
-            min_y = vertices[i].y;
+        if (edges[i].end.x < min_x){
+            min_x = edges[i].end.x;
         };
-        if (vertices[i].x > max_x){
-            max_x = vertices[i].x;
+        if (edges[i].start.y < min_y){
+            min_y = edges[i].start.y;
         };
-        if (vertices[i].y > max_y){
-            max_y = vertices[i].y;
+        if (edges[i].end.y < min_y){
+            min_y = edges[i].end.y;
+        };
+        if (edges[i].start.x > max_x){
+            max_x = edges[i].start.x;
+        };
+        if (edges[i].end.x > max_x){
+            max_x = edges[i].end.x;
+        };
+        if (edges[i].start.y > max_y){
+            max_y = edges[i].start.y;
+        };
+        if (edges[i].end.y > max_y){
+            max_y = edges[i].end.y;
         };
     }
     width = (max_x - min_x) + 2 * offset;
     height = (max_y - min_y) + 2 * offset;
-    for (int i=0; i<vertices.size(); i++){
-        vertices[i].y = height - vertices[i].y - offset;
-        vertices[i].x = vertices[i].x + offset;
-    }
     for (int i=0; i<edges.size(); i++){
         edges[i].start.y = height - edges[i].start.y - offset;
         edges[i].start.x = edges[i].start.x + offset;
@@ -76,13 +84,6 @@ void Polygon::print_edges(){
     }
 }
 
-void Polygon::print_vertices(){
-    cout << endl << "Printing " << vertices.size() << " polygon's vertices (resolution " << resolution << ")" << endl;
-    for (int i=0; i<vertices.size(); i++){
-        cout << "[" << vertices[i].x << ", " << vertices[i].y << "]" <<  endl;
-    }
-}
-
 
 void Polygon::load_data(const string &path){
     cout << endl <<"Loading polygon model from " << path << endl;
@@ -90,10 +91,8 @@ void Polygon::load_data(const string &path){
     string line;
     while (getline(input_stream, line)){
         vector<string> values = split_by_delim(line, ",");
-        Point start = Point(atoi(values[0].c_str())*resolution, atoi(values[1].c_str())*resolution);
-        Point end = Point(atoi(values[2].c_str())*resolution, atoi(values[3].c_str())*resolution);
-        vertices.push_back(start);
-        vertices.push_back(end);
+        Point start = Point(atoi(values[0].c_str()) * resolution, atoi(values[1].c_str()) * resolution);
+        Point end = Point(atoi(values[2].c_str()) * resolution, atoi(values[3].c_str()) * resolution);
         Edge edge = Edge(start, end);
         edges.push_back(edge);
     }

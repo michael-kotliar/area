@@ -9,7 +9,6 @@ int main(int argc, char* argv[]){
 	Parser custom_parser = Parser(argc, argv);
     Polygon polygon = Polygon(custom_parser.coord);
     polygon.print_edges();
-    polygon.print_vertices();
     polygon.show();
     return 0;
 }
