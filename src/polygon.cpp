@@ -141,7 +141,7 @@ double Polygon::calculate_area(){
             Point cur_point (i, j);
             Vec3b &previous_color = image.at<Vec3b>(previous_point);
             Vec3b &cur_color = image.at<Vec3b>(cur_point);
-            if (previous_color == BLACK && cur_color == GREEN){
+            if ((previous_color == GREEN || previous_color == BLACK) && cur_color == GREEN){
                 if (inside){
                     end_x = cur_point.x;
                     entering = false;
