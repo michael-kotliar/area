@@ -178,6 +178,9 @@ void Polygon::load_data(const string &path){
     ifstream input_stream(path);
     string line;
     while (getline(input_stream, line)){
+        if (line.empty()){
+            continue;
+        }
         vector<string> values = split_by_delim(line, ",");
         Point start = Point(
             round(atof(values[0].c_str())*resolution),
