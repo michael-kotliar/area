@@ -21,7 +21,6 @@ struct Edge {
     Point start;
     Point end;
     Edge (const Point &a, const Point &b);
-    void print();
 };
 
 
@@ -30,20 +29,19 @@ class Polygon {
 public:
     Polygon(const string &path);
     void load_data(const string &path);
-    void print_edges();
     void show();
     double calculate_area();
     bool validate();
 private:
-    int resolution;  // dots per unit
+    int resolution;
     int width;
     int height;
     int offset;
-    vector <pair <int, int> > lookup_direction;
     Mat image;
     vector<Edge> edges;
+    vector <pair <int, int> > lookup_direction;
     void setup_canvas();
-    void draw();
+    void build();
     bool make_step(int &x, int &y, vector <Point> &available_steps);
     bool is_single();
 };

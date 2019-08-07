@@ -8,14 +8,9 @@ Edge::Edge (const Point &a, const Point &b){
 }
 
 
-void Edge::print(){
-    cout << "[" << start.x << ", " << start.y << "]  -  [" << end.x << ", " << end.y << "]" <<  endl;
-}
-
-
 Polygon::Polygon(const string &path){
     resolution = 300;
-    offset = 300;
+    offset = 5;
     lookup_direction.push_back(pair <int, int > (-1, -1) );
     lookup_direction.push_back(pair <int, int > (0, -1) );
     lookup_direction.push_back(pair <int, int > (1, -1) );
@@ -26,7 +21,7 @@ Polygon::Polygon(const string &path){
     lookup_direction.push_back(pair <int, int > (-1, 0) );
     load_data(path);
     setup_canvas();
-    draw();
+    build();
 }
 
 void Polygon::setup_canvas(){
@@ -68,10 +63,9 @@ void Polygon::setup_canvas(){
         edges[i].end.y = height - edges[i].end.y - offset;
         edges[i].end.x = edges[i].end.x + offset;
     }
-    cout << "width " << width << ", height " << height << endl; 
 }
 
-void Polygon::draw(){
+void Polygon::build(){
     image = Mat(height, width, CV_8UC3, Scalar(0, 0, 0));
     for (int i=0; i<edges.size(); i++){
         line(image, edges[i].start, edges[i].end, Scalar(255,255,255));
@@ -99,9 +93,9 @@ bool Polygon::make_step(int &x, int &y, vector <Point> &available_steps){
 }
 
 bool Polygon::is_single(){
-    for (int i = 0; i < edges.size(); i++){  // check only starts
-        Point cur_point (edges[i].start.x, edges[i].start.y);
-        Vec3b &color = image.at<Vec3b>(cur_point);
+    for (int i = 0; i < edges.size(); i++){
+        Point start_point (edges[i].start.x, edges[i].start.y);
+        Vec3b &color = image.at<Vec3b>(start_point);
         if (color[0] != 0 || color[1] != 255 || color[2] != 0){
             return false;
         };
@@ -166,16 +160,7 @@ double Polygon::calculate_area(){
 }
 
 
-void Polygon::print_edges(){
-    cout << endl << "Printing " << edges.size() << " polygon's edges (resolution " << resolution << ")" << endl;
-    for (int i=0; i<edges.size(); i++){
-        edges[i].print();
-    }
-}
-
-
 void Polygon::load_data(const string &path){
-    cout << endl <<"Loading polygon model from " << path << endl;
     ifstream input_stream(path);
     string line;
     while (getline(input_stream, line)){
