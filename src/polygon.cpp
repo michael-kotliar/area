@@ -165,8 +165,12 @@ void Polygon::load_data(const string &path){
     string line;
     while (getline(input_stream, line)){
         vector<string> values = split_by_delim(line, ",");
-        Point start = Point( round(atof(values[0].c_str())*resolution), round(atof(values[1].c_str())*resolution) );
-        Point end = Point( round(atof(values[2].c_str())*resolution), round(atof(values[3].c_str())*resolution) );
+        Point start = Point(
+            round(atof(values[0].c_str())*resolution),
+            round(atof(values[1].c_str())*resolution));
+        Point end = Point(
+            round(atof(values[2].c_str())*resolution),
+            round(atof(values[3].c_str())*resolution));
         Edge edge = Edge(start, end);
         edges.push_back(edge);
     }
