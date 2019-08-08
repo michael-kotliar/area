@@ -1,14 +1,15 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <vector>
-#include <sstream>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 
 using namespace std;
 
-
+// split line by delimiter
 inline vector<string> split_by_delim(const string &line, string delim = "\t"){
     stringstream buffer(line);
     string temp;

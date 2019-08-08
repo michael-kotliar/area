@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
         polygon.show();
         waitKey(0);
     } else {
-        cout << "Cannot build polygon: not single || not closed || includes wholes" << endl;
+        cout << "Cannot build polygon: isn't single OR isn't closed OR includes holes" << endl;
     }
     return 0;
 }
