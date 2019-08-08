@@ -34,3 +34,4 @@ Expected output
 ```
 Area = 55.92
 ```
+![Polygon](https://raw.githubusercontent.com/michael-kotliar/area/master/docs/images/polygon.png)
