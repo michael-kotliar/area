@@ -11,10 +11,7 @@ include_directories (include)
 
 set(SOURCE_FILES
         src/main.cpp
-        src/parser.cpp
         src/polygon.cpp
-        include/cxxopts.hpp
-        include/parser.h
         include/polygon.h
         include/utils.h
 )

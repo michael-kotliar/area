@@ -1,4 +1,3 @@
-#include "parser.h"
 #include "polygon.h"
 
 
@@ -6,8 +5,8 @@ using namespace std;
 
 
 int main(int argc, char* argv[]){
-	Parser custom_parser = Parser(argc, argv);
-    Polygon polygon = Polygon(custom_parser.coord);
+	string coordinate_file = argv[1];
+    Polygon polygon = Polygon(coordinate_file);
     if (polygon.validate()){
         double area = polygon.calculate_area();
         cout << "Area = " << area << endl;
